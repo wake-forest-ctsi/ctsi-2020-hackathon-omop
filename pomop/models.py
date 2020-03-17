@@ -1,6 +1,7 @@
 # coding: utf-8
-from sqlalchemy import BigInteger, Column, Date, DateTime, Integer, MetaData, Numeric, String, Table, Text
+from sqlalchemy import BigInteger, Column, Date, DateTime, Integer, MetaData, Numeric, String, Table, Text, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -43,13 +44,23 @@ t_cdm_source = Table(
 )
 
 
-t_cohort = Table(
-    'cohort', metadata,
-    Column('cohort_definition_id', Integer, nullable=False),
-    Column('subject_id', Integer, nullable=False),
-    Column('cohort_start_date', Date, nullable=False),
-    Column('cohort_end_date', Date, nullable=False)
-)
+# t_cohort = Table(
+#     'cohort', metadata,
+#     Column('cohort_definition_id', Integer, nullable=False),
+#     Column('subject_id', Integer, nullable=False),
+#     Column('cohort_start_date', Date, nullable=False),
+#     Column('cohort_end_date', Date, nullable=False)
+# )
+
+class Cohort(Base):
+    __tablename__ = 'cohort'
+    cohort_definition_id = Column(Integer, ForeignKey('cohort_definition.cohort_definition_id'), primary_key=True)
+    subject_id = Column(Integer, primary_key=True)
+    cohort_start_date = Column(Date, nullable=False)
+    cohort_end_date = Column(Date, nullable=False)
+    
+    def __str__(self):
+        return f"<TableName(cohort_definition_id={self.cohort_definition_id}, subject_id={self.subject_id})>"
 
 
 t_cohort_attribute = Table(
@@ -74,6 +85,22 @@ t_cohort_definition = Table(
     Column('subject_concept_id', Integer, nullable=False),
     Column('cohort_initiation_date', Date)
 )
+
+class CohortDefinition(Base):
+    __tablename__ = 'cohort_definition'
+    cohort_definition_id = Column(Integer, primary_key=True)
+    cohort_definition_name = Column(String(255), primary_key=True)
+    cohort_definition_description = Column(Text)
+    definition_type_concept_id = Column(Integer, nullable=False)
+    cohort_definition_syntax = Column(Text)
+    subject_concept_id = Column(Integer, nullable=False)
+    cohort_initiation_date = Column(Date, nullable=False)
+
+    cohorts = relationship("Cohort", backref="definition")
+    
+    def __str__(self):
+        return f"<{self.__tablename__}(cohort_definition_id={self.cohort_definition_id}, cohort_definition_name={self.cohort_definition_name})>"
+
 
 
 t_concept = Table(
@@ -452,6 +479,17 @@ t_person = Table(
     Column('ethnicity_source_value', String(50)),
     Column('ethnicity_source_concept_id', Integer)
 )
+
+# TODO
+class Person(Base):
+    __tablename__ = 'person'
+    cohort_definition_id = Column(Integer, primary_key=True)
+    subject_id = Column(Integer, primary_key=True)
+    cohort_start_date = Column(Date, nullable=False)
+    cohort_end_date = Column(Date, nullable=False)
+    
+    def __str__(self):
+        return f"<TableName(cohort_definition_id={self.cohort_definition_id}, subject_id={self.subject_id})>"
 
 
 t_procedure_occurrence = Table(

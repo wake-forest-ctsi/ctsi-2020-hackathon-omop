@@ -5,7 +5,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-from pomop.models import ConceptClass
+from pomop.models import ConceptClass, Cohort
 
 load_dotenv()
 
@@ -18,9 +18,10 @@ Session = sessionmaker(bind=engine)
 def main():
     logger.debug('boop')
     session = Session()
-    result = session.query(ConceptClass).limit(10)
+    result = session.query(Cohort).limit(10)
     for row in result:
         logger.debug(row)
+        logger.debug(row.definition)
 
 if __name__ == '__main__':
     main()
