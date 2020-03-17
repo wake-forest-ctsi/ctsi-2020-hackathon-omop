@@ -22,6 +22,8 @@ def main():
     for row in result:
         logger.debug(row)
         logger.debug(row.definition)
+        logger.debug(row.person)
+        logger.debug('\n')
 
 if __name__ == '__main__':
     main()

@@ -1,7 +1,7 @@
 # coding: utf-8
 from sqlalchemy import BigInteger, Column, Date, DateTime, Integer, MetaData, Numeric, String, Table, Text, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
 
@@ -58,6 +58,8 @@ class Cohort(Base):
     subject_id = Column(Integer, primary_key=True)
     cohort_start_date = Column(Date, nullable=False)
     cohort_end_date = Column(Date, nullable=False)
+
+    person = relationship("Person", backref=backref("cohort", uselist=False))
     
     def __str__(self):
         return f"<TableName(cohort_definition_id={self.cohort_definition_id}, subject_id={self.subject_id})>"
@@ -100,7 +102,6 @@ class CohortDefinition(Base):
     
     def __str__(self):
         return f"<{self.__tablename__}(cohort_definition_id={self.cohort_definition_id}, cohort_definition_name={self.cohort_definition_name})>"
-
 
 
 t_concept = Table(
