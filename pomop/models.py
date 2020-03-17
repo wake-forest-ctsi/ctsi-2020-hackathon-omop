@@ -1,5 +1,8 @@
 # coding: utf-8
 from sqlalchemy import BigInteger, Column, Date, DateTime, Integer, MetaData, Numeric, String, Table, Text
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 metadata = MetaData()
 
@@ -103,6 +106,18 @@ t_concept_class = Table(
     Column('concept_class_name', String(255), nullable=False),
     Column('concept_class_concept_id', Integer, nullable=False)
 )
+
+class ConceptClass(Base):
+    __tablename__ = 'concept_class'
+    concept_class_id = Column(String(20), primary_key=True)
+    concept_class_name = Column(String(255),nullable=False)
+    concept_class_concept_id = Column(Integer, nullable=False)
+    
+    def __repr__(self):
+        return f"<TableName(concept_class_name={self.concept_class_name})>"
+    
+    def __repr__(self):
+        return "<TableName(concept_class_id='%s')>" % self.concept_class_id
 
 
 t_concept_relationship = Table(
